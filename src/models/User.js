@@ -1,5 +1,5 @@
-import mongoose from 'mongoose'
-import bcrypt from 'bcryptjs'
+import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
 
 const UserSchema = new mongoose.Schema(
   {
@@ -15,18 +15,18 @@ const UserSchema = new mongoose.Schema(
     isAvailable: { type: Boolean, default: false }
   },
   { timestamps: true }
-)
+);
 
-// Encriptar contraseña antes de guardar
+// ✅ Hashear contraseña antes de guardar
 UserSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next()
-  this.password = await bcrypt.hash(this.password, 10)
-  next()
-})
+  if (!this.isModified('password')) return next();
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
+});
 
-// Método para comparar contraseñas
-UserSchema.methods.comparePassword = function (candidatePassword) {
-  return bcrypt.compare(candidatePassword, this.password)
-}
+// ✅ Método para comparar contraseñas
+UserSchema.methods.comparePassword = async function (candidatePassword) {
+  return await bcrypt.compare(candidatePassword, this.password);
+};
 
-export default mongoose.model('User', UserSchema)
+export default mongoose.model('User', UserSchema);
